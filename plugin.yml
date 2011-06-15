@@ -1,0 +1,17 @@
+name: Razmod
+main: me.Razish.Razmod.Razmod
+version: 0.0.9
+
+commands:
+    players:
+        description: List the online players
+        usage: /players
+    wb:
+        description: Give yourself a workbench
+        usage: /wb
+#    fb:
+#        description: Shoot a fireball!
+#        usage: /fb
+#    stackraz:
+#        description: Stack the unused tools in your inventory
+#        usage: /stackraz
