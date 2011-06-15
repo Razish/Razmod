@@ -20,8 +20,9 @@ public class RazmodPlayerListener extends PlayerListener
 	{//PLAYER_JOIN event handler
 		Player ply = e.getPlayer();
 		e.setJoinMessage( null );
+		boolean showWorld = plugin.getConfigBool( "welcome.showworld" );
 
-		plugin.getServer().broadcastMessage( ChatColor.GOLD.toString() + ply.getDisplayName() + ChatColor.DARK_GREEN.toString() + " joined on world " + ply.getWorld().getName() );
+		plugin.getServer().broadcastMessage( ChatColor.GOLD.toString() + ply.getDisplayName() + ChatColor.DARK_GREEN.toString() + (showWorld ? (" joined on world " + ply.getWorld().getName()) : " joined") );
 
 		if ( plugin.getConfigBool( "welcome.showmotd" ) == true )
 			ply.sendMessage( plugin.getConfigString( "welcome.motd" ) );
@@ -48,6 +49,8 @@ public class RazmodPlayerListener extends PlayerListener
 
 	public void onPlayerPortal( PlayerPortalEvent e )
 	{//PLAYER_PORTAL event handler
+		if ( !plugin.getConfigBool( "portal.notify" ) )
+			return;
 		if ( !(e.getTo().getWorld().getName().equals( e.getFrom().getWorld().getName() )) )
 			plugin.getServer().broadcastMessage( ChatColor.AQUA.toString() + e.getPlayer().getDisplayName() + " is portaling to: " + e.getTo().getWorld().getName() /*+ " from " + e.getFrom().getWorld().getName()*/ );
 	}

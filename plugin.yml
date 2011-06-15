@@ -1,6 +1,6 @@
 name: Razmod
 main: me.Razish.Razmod.Razmod
-version: 0.0.9
+version: 0.0.9a
 
 commands:
     players:

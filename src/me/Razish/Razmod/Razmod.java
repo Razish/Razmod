@@ -48,14 +48,16 @@ public class Razmod extends JavaPlugin
 	public Logger log;
 	private boolean permissionsEnabled = false;
 	
-	//CONFIGURATION start (thanks Pandarr for this awesome method =3
+	//CONFIGURATION start (thanks Pandarr for this awesome method =3)
 	private static final Map<String, Object> CONFIG_DEFAULTS = new HashMap<String, Object>();
 	private Configuration myConfig;
 	static {
 		CONFIG_DEFAULTS.put( "welcome.motd", "This is the default Razmod MotD, change it in config.yml!" );
 		CONFIG_DEFAULTS.put( "welcome.showmotd", true );
+		CONFIG_DEFAULTS.put( "welcome.showworld", true );
 		CONFIG_DEFAULTS.put( "cart.spawnblock", Material.SPONGE.toString() );
 		CONFIG_DEFAULTS.put( "cart.spawnallow", true );
+		CONFIG_DEFAULTS.put( "portal.notify", true );
 	}
 
 	private void loadConfig()
@@ -65,6 +67,7 @@ public class Razmod extends JavaPlugin
 		if ( configFile.exists() )
 		{
 			myConfig = new Configuration( configFile );
+			myConfig.setHeader( "# Configuration file for Razmod v"+this.getDescription().getVersion()+"\r\n" );
 			myConfig.load();
 			for ( String prop : CONFIG_DEFAULTS.keySet() )
 			{
@@ -191,9 +194,8 @@ public class Razmod extends JavaPlugin
 		if ( cmd.getName().equalsIgnoreCase( "players" ) )
 		{//Print a list of connected players
 			Player[] players = sender.getServer().getOnlinePlayers();
-			Player ply = asPlayer( sender );
 
-			if ( ply == null || players.length == 0 )
+			if ( players.length == 0 )
 			{//OOB and sender==console check
 				sender.sendMessage( "There are no players online" );
 				return true;
