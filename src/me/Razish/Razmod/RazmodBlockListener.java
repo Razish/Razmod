@@ -4,6 +4,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockCanBuildEvent;
 import org.bukkit.event.block.BlockListener;
@@ -24,11 +25,15 @@ public class RazmodBlockListener extends BlockListener
 	{
 		Block b = e.getBlock();
 		Material m = b.getType();
+		Player ply = e.getPlayer();
 		if ( m == Material.COBBLESTONE_STAIRS || m == Material.WOOD_STAIRS )
 		{//If stairs break, drop new stairs!
 			e.setCancelled( true );
 			b.getWorld().dropItemNaturally( b.getLocation(), new ItemStack( m, 1 ) );
 			b.setType( Material.AIR );
+		}
+		if ( plugin.getConfigBool( "cart.spawnallow" ) && m == plugin.getConfigMaterial( "cart.spawnblock" ) && plugin.hasPermissions( ply, "razmod.cart.spawner" ) )
+		{
 		}
 	}
 

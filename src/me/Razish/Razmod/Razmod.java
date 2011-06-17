@@ -17,6 +17,7 @@ import net.minecraft.server.World;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 //import org.bukkit.craftbukkit.CraftWorld;
@@ -25,6 +26,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.block.BlockListener;
 import org.bukkit.event.player.PlayerListener;
+import org.bukkit.event.server.ServerListener;
 import org.bukkit.event.vehicle.VehicleListener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginManager;
@@ -39,6 +41,7 @@ public class Razmod extends JavaPlugin
 	private PlayerListener playerListener;
 	private BlockListener blockListener;
 	private VehicleListener vehicleListener;
+	private ServerListener serverListener;
 	private PluginManager pm;
 	
 	//Tables by Demonen - https://github.com/DemmyDemon/Tables/
@@ -46,7 +49,7 @@ public class Razmod extends JavaPlugin
 	public HashSet<Material> onTopOf = new HashSet<Material>();
 
 	public Logger log;
-	private boolean permissionsEnabled = false;
+	boolean permissionsEnabled = false;
 	
 	//CONFIGURATION start (thanks Pandarr for this awesome method =3)
 	private static final Map<String, Object> CONFIG_DEFAULTS = new HashMap<String, Object>();
@@ -101,8 +104,7 @@ public class Razmod extends JavaPlugin
 		return myConfig.getString( path, (String)CONFIG_DEFAULTS.get( path ) );
 	}
 	public Material getConfigMaterial( final String path ) {
-		String str = getConfigString( path );
-		return Material.getMaterial( str );
+		return Material.getMaterial( getConfigString( path ) );
 	}
 	//CONFIGURATION end
 
@@ -113,6 +115,7 @@ public class Razmod extends JavaPlugin
 		playerListener = new RazmodPlayerListener( this );
 		blockListener = new RazmodBlockListener( this );
 		vehicleListener = new RazmodVehicleListener( this );
+		serverListener = new RazmodServerListener( this );
 	}
 
 	public void onEnable()
@@ -132,11 +135,13 @@ public class Razmod extends JavaPlugin
 		
 		pm.registerEvent( Event.Type.VEHICLE_DESTROY, vehicleListener, Event.Priority.Normal, this );
 		
+		pm.registerEvent( Event.Type.PLUGIN_ENABLE, serverListener, Event.Priority.Normal, this );
+		pm.registerEvent( Event.Type.PLUGIN_DISABLE, serverListener, Event.Priority.Normal, this );
+		
 		//Tables by Demonen
 		place.clear();
 		place.add( Material.WOOD_PLATE );
 		place.add( Material.STONE_PLATE );
-		place.add( Material.LADDER );
 		place.add( Material.RAILS );
 		place.add( Material.POWERED_RAIL );
 		onTopOf.clear();
@@ -144,6 +149,7 @@ public class Razmod extends JavaPlugin
 		onTopOf.add( Material.GLASS );
 		onTopOf.add( Material.WOOD_STAIRS );
 		onTopOf.add( Material.COBBLESTONE_STAIRS );
+		onTopOf.add( Material.STEP );
 
 		log.info( "[Razmod]: Hello world! Version " + this.getDescription().getVersion() );
 		if ( permissionsEnabled )
@@ -213,9 +219,40 @@ public class Razmod extends JavaPlugin
 			Player ply = asPlayer( sender );
 			if ( ply == null )
 				sender.sendMessage( "This command must be run as a player" );
-			else if ( sender.isOp() || (permissionsEnabled && Permissions.Security.has( ply , "razmod.wb" ) ) )
+			else if ( hasPermissions( ply, "razmod.workbench" ) )
 				ply.getInventory().addItem( new ItemStack( Material.WORKBENCH, 1 ) );
 			return true;
+		}
+		
+		if ( cmd.getName().equalsIgnoreCase( "seed" ) )
+		{//TODO: Send the seed of the specified world
+			Player ply = asPlayer( sender );
+			if ( ply == null )
+			{//From the console
+				if ( args.length != 1 )
+				{
+					sender.sendMessage( "Please specify a world to show the seed of" );
+					return true;
+				}
+				else
+				{
+					World world = getServer().getWorld( args[0] );
+					if ( world == null )
+						sender.sendMessage( "World '" + args[0] + "' does not exist" );
+					else
+						sender.sendMessage( "Seed for world '" + world.getName() + "' is '" + world.getSeed() + "'" );
+					return true;
+				}
+			}
+			else
+			{//From a player
+				World world = (args.length==1) ? getServer().getWorld( args[0] ) : ply.getWorld();
+				if ( world == null )
+					ply.sendMessage( "World '" + args[0] + "' does not exist" );
+				else
+					ply.sendMessage( "Seed for world '" + world.getName() + "' is '" + world.getSeed() + "'" );
+				return true;
+			}
 		}
 
 		return false;

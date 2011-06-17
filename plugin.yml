@@ -1,6 +1,6 @@
 name: Razmod
 main: me.Razish.Razmod.Razmod
-version: 0.0.9a
+version: 0.0.9c
 
 commands:
     players:
@@ -9,6 +9,9 @@ commands:
     wb:
         description: Give yourself a workbench
         usage: /wb
+    seed:
+        description: Displays the seed of a given world
+        usage: /seed
 #    fb:
 #        description: Shoot a fireball!
 #        usage: /fb
