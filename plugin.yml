@@ -1,20 +1,26 @@
 name: Razmod
 main: me.Razish.Razmod.Razmod
-version: 0.0.9c
+version: 0.0.9d
 
 commands:
     players:
         description: List the online players
-        usage: /players
+        usage: '[Razmod] Usage: /players'
     wb:
         description: Give yourself a workbench
-        usage: /wb
+        usage: '[Razmod] Usage: /wb'
     seed:
         description: Displays the seed of a given world
-        usage: /seed
+        usage: '[Razmod] Usage: /seed [world]'
+    motd:
+        description: Displays the message of the day
+        usage: '[Razmod] Usage: /motd'
+    setmotd:
+        description: Sets the message of the day
+        usage: '[Razmod] Usage: /setmotd Welcome to my server!'
 #    fb:
 #        description: Shoot a fireball!
-#        usage: /fb
+#        usage: '[Razmod] Usage: /fb'
 #    stackraz:
 #        description: Stack the unused tools in your inventory
-#        usage: /stackraz
+#        usage: '[Razmod] Usage: /stackraz'

@@ -232,7 +232,7 @@ public class Razmod extends JavaPlugin
 				if ( args.length != 1 )
 				{
 					sender.sendMessage( "Please specify a world to show the seed of" );
-					return true;
+					return false;
 				}
 				else
 				{
@@ -253,6 +253,32 @@ public class Razmod extends JavaPlugin
 					ply.sendMessage( "Seed for world '" + world.getName() + "' is '" + world.getSeed() + "'" );
 				return true;
 			}
+		}
+		
+		if ( cmd.getName().equalsIgnoreCase( "motd" ) )
+		{
+			if ( !getConfigBool( "welcome.showmotd" ) && sender.isOp() )
+				sender.sendMessage( "MotD is currently disabled!" );
+			sender.sendMessage( "MotD is '" + getConfigString( "welcome.motd" ) + "'" );
+			return true;
+		}
+		
+		if ( cmd.getName().equalsIgnoreCase( "setmotd" ) )
+		{
+			Player ply = asPlayer( sender );
+			String motd;
+			if ( args.length > 0 &&
+					(sender.isOp() || (ply != null && permissionsEnabled && hasPermissions( ply, "razmod.setmotd" ) ))
+				)
+			{
+				motd = args[0];
+				for ( int i=1; i<args.length; i++ )
+					motd += " " + args[i];
+				myConfig.setProperty( "welcome.motd", motd );
+				sender.sendMessage( "[Razmod] MotD is now '"+getConfigString( "welcome.motd" )+"'" );
+				return true;
+			}
+			return false;
 		}
 
 		return false;
