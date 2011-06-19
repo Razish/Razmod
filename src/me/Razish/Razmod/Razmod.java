@@ -28,6 +28,7 @@ import org.bukkit.event.block.BlockListener;
 import org.bukkit.event.player.PlayerListener;
 import org.bukkit.event.server.ServerListener;
 import org.bukkit.event.vehicle.VehicleListener;
+import org.bukkit.event.weather.WeatherListener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -41,6 +42,7 @@ public class Razmod extends JavaPlugin
 	private PlayerListener playerListener;
 	private BlockListener blockListener;
 	private VehicleListener vehicleListener;
+	private WeatherListener weatherListener;
 	private ServerListener serverListener;
 	private PluginManager pm;
 	
@@ -61,6 +63,7 @@ public class Razmod extends JavaPlugin
 		CONFIG_DEFAULTS.put( "cart.spawnblock", Material.SPONGE.toString() );
 		CONFIG_DEFAULTS.put( "cart.spawnallow", true );
 		CONFIG_DEFAULTS.put( "portal.notify", true );
+		CONFIG_DEFAULTS.put( "weather.disable", true );
 	}
 
 	private void loadConfig()
@@ -115,6 +118,7 @@ public class Razmod extends JavaPlugin
 		playerListener = new RazmodPlayerListener( this );
 		blockListener = new RazmodBlockListener( this );
 		vehicleListener = new RazmodVehicleListener( this );
+		weatherListener = new RazmodWeatherListener( this );
 		serverListener = new RazmodServerListener( this );
 	}
 
@@ -134,6 +138,8 @@ public class Razmod extends JavaPlugin
 		pm.registerEvent( Event.Type.BLOCK_PHYSICS, blockListener, Event.Priority.Normal, this );
 		
 		pm.registerEvent( Event.Type.VEHICLE_DESTROY, vehicleListener, Event.Priority.Normal, this );
+		
+		pm.registerEvent( Event.Type.WEATHER_CHANGE, weatherListener, Event.Priority.Normal, this );
 		
 		pm.registerEvent( Event.Type.PLUGIN_ENABLE, serverListener, Event.Priority.Normal, this );
 		pm.registerEvent( Event.Type.PLUGIN_DISABLE, serverListener, Event.Priority.Normal, this );
